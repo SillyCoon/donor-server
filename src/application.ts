@@ -1,14 +1,16 @@
-import {BootMixin} from '@loopback/boot';
-import {ApplicationConfig} from '@loopback/core';
+import { BootMixin } from '@loopback/boot';
+import { ApplicationConfig } from '@loopback/core';
 import {
   RestExplorerBindings,
   RestExplorerComponent,
 } from '@loopback/rest-explorer';
-import {RepositoryMixin} from '@loopback/repository';
-import {RestApplication} from '@loopback/rest';
-import {ServiceMixin} from '@loopback/service-proxy';
+import { RepositoryMixin } from '@loopback/repository';
+import { RestApplication } from '@loopback/rest';
+import { ServiceMixin } from '@loopback/service-proxy';
 import * as path from 'path';
-import {MySequence} from './sequence';
+import { MySequence } from './sequence';
+import { AuthenticationComponent, AuthenticationBindings } from '@loopback/authentication';
+import { MyAuthMetadataProvider, MyAuthStrategyProvider, MyAuthActionProvider } from './auth';
 
 export class DonorServerApplication extends BootMixin(
   ServiceMixin(RepositoryMixin(RestApplication)),
@@ -27,6 +29,13 @@ export class DonorServerApplication extends BootMixin(
       path: '/explorer',
     });
     this.component(RestExplorerComponent);
+
+    // enable authenticationcomponent
+    this.component(AuthenticationComponent);
+    // bind authentication bindings to our custom providers
+    this.bind(AuthenticationBindings.METADATA).toProvider(MyAuthMetadataProvider);
+    this.bind(AuthenticationBindings.STRATEGY).toProvider(MyAuthStrategyProvider);
+    this.bind(AuthenticationBindings.AUTH_ACTION).toProvider(MyAuthActionProvider);
 
     this.projectRoot = __dirname;
     // Customize @loopback/boot Booter Conventions here

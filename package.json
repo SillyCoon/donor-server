@@ -57,13 +57,16 @@
     "@loopback/rest-explorer": "^1.1.19",
     "@loopback/service-proxy": "^1.1.7",
     "loopback-connector-mysql": "^5.3.1",
-    "nodemon": "^1.19.0"
+    "nodemon": "^1.19.0",
+    "passport-jwt": "^4.0.0"
   },
   "devDependencies": {
     "@loopback/build": "^1.5.1",
     "@loopback/testlab": "^1.2.6",
     "@loopback/tslint-config": "^2.0.4",
     "@types/node": "^10.11.2",
+    "@types/passport": "^1.0.0",
+    "@types/passport-jwt": "^3.0.1",
     "tslint": "^5.15.0",
     "typescript": "^3.4.3"
   }
