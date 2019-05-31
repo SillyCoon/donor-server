@@ -4,3 +4,8 @@ export * from './citizenship.repository';
 export * from './role.repository';
 export * from './user-role.repository';
 export * from './user.repository';
+export * from './donation-point.repository';
+export * from './donation-time.repository';
+export * from './donation-status.repository';
+export * from './donor-time.repository';
+export * from './residency.repository';

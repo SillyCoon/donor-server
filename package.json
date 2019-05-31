@@ -13,6 +13,7 @@
   "scripts": {
     "build:apidocs": "lb-apidocs",
     "build": "lb-tsc es2017 --outDir dist",
+    "bm": "lb-tsc es2017 --outDir dist && node ./dist/migrate",
     "build:watch": "lb-tsc --watch",
     "clean": "lb-clean dist",
     "lint": "npm run prettier:check && npm run tslint",
@@ -56,6 +57,8 @@
     "@loopback/rest": "^1.10.5",
     "@loopback/rest-explorer": "^1.1.19",
     "@loopback/service-proxy": "^1.1.7",
+    "@types/lodash": "^4.14.132",
+    "lodash": "^4.17.11",
     "loopback-connector-mysql": "^5.3.1",
     "nodemon": "^1.19.0",
     "passport-jwt": "^4.0.0"

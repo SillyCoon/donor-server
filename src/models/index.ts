@@ -5,3 +5,8 @@ export * from './weight.model';
 export * from './user.model';
 export * from './role.model';
 export * from './user-role.model';
+export * from './donation-time.model';
+export * from './donation-point.model';
+export * from './donor-time.model';
+export * from './donation-status.model';
+export * from './residency.model';

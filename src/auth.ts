@@ -8,6 +8,7 @@ import {
   ValueOrPromise,
   Getter,
   Setter,
+  BindingKey,
 } from '@loopback/core';
 import {
   AUTHENTICATION_METADATA_KEY,
@@ -47,7 +48,7 @@ export enum SecuredType {
   IS_AUTHENTICATED, // any authenticated user
   PERMIT_ALL, // bypass security check, permit everyone
   HAS_ANY_ROLE, // user must have one or more roles specified in the `roles` attribute
-  HAS_ROLES, // user must have all roles specified in the `roles` attribute
+  HAS_ROLES, // user mast have all roles specified in the `roles` attribute
   DENY_ALL, // you shall not pass!
 }
 
@@ -77,12 +78,17 @@ export class MyAuthMetadataProvider extends AuthMetadataProvider {
 }
 
 // the JWT_secret to encrypt and decrypt JWT token
-export const JWT_SECRET = 'secretcodexaxaxa';
+export const JWT_SECRET = 'changeme';
 
 // the required interface to filter login payload
 export interface Credentials {
   username: string;
   password: string;
+}
+
+// implement custom namespace bindings
+export namespace MyAuthBindings {
+  export const STRATEGY = BindingKey.create<Strategy | undefined>('authentication.strategy');
 }
 
 // the strategy provider will parse the specifed strategy, and act accordingly
@@ -101,26 +107,31 @@ export class MyAuthStrategyProvider implements Provider<Strategy | undefined> {
       return new JwtStrategy(
         {
           secretOrKey: JWT_SECRET,
-          jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
+          jwtFromRequest: ExtractJwt//.fromAuthHeaderAsBearerToken()
+            .fromUrlQueryParameter('access_token'),
         },
-        (payload: Credentials,
-          done: (err: Error | null, user?: false | UserProfile | undefined, info?: Object | undefined) => void) => this.verifyToken(payload, done),
+        (payload, done) => this.verifyToken(payload, done),
       );
     }
   }
 
-  // verify JWT token and decryot the payload. Then search user from database with id equals to payload's username.
+  // verify JWT token and decryot the payload.
+  // Then search user from database with id equals to payload's username.
   // if user is found, then verify its roles
-  async verifyToken(payload: any, done: any,
+  async verifyToken(
+    payload: Credentials,
+    done: (err: Error | null, user?: UserProfile | false, info?: Object) => void,
   ) {
     try {
+      console.log(payload);
       const { username } = payload;
-      const user = await this.userRepository.findById(username);
+      const user = await this.userRepository.findOne({ where: { email: username } });
+
       if (!user) done(null, false);
 
       await this.verifyRoles(username);
 
-      done(null, { name: username, email: user.email, id: username });
+      done(null, { name: username, email: user!.email, id: username });
     } catch (err) {
       if (err.name === 'UnauthorizedError') done(null, false);
       done(err, false);
@@ -161,7 +172,7 @@ export class MyAuthStrategyProvider implements Provider<Strategy | undefined> {
 // the entry point for authentication.
 export class MyAuthActionProvider implements Provider<AuthenticateFn> {
   constructor(
-    @inject.getter(AuthenticationBindings.STRATEGY) readonly getStrategy: Getter<Strategy>,
+    @inject.getter(MyAuthBindings.STRATEGY) readonly getStrategy: Getter<Strategy>,
     @inject.setter(AuthenticationBindings.CURRENT_USER) readonly setCurrentUser: Setter<UserProfile>,
     @inject(AuthenticationBindings.METADATA) private metadata: MyAuthenticationMetadata,
   ) { }

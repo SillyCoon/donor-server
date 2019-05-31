@@ -3,3 +3,8 @@ export * from './donor.controller';
 export * from './weight.controller';
 export * from './citizenship.controller';
 export * from './authentication.controller';
+export * from './donation-time.controller';
+export * from './donation-points.controller';
+export * from './donation-status.controller';
+export * from './donor-time.controller';
+export * from './residency.controller';

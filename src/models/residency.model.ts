@@ -1,8 +1,9 @@
 import { Entity, model, property, hasMany } from '@loopback/repository';
-import { DonorInfo } from './donor-info.model';
+import { DonorInfo } from '.';
 
-@model()
-export class Weight extends Entity {
+@model({ settings: {} })
+export class Residency extends Entity {
+
   @property({
     type: 'number',
     id: true,
@@ -15,10 +16,7 @@ export class Weight extends Entity {
   })
   text: string;
 
-  @hasMany(() => DonorInfo)
-  donors?: DonorInfo[];
-
-  constructor(data?: Partial<Weight>) {
+  constructor(data?: Partial<Residency>) {
     super(data);
   }
 }
